@@ -1,12 +1,8 @@
-Anti NetScan Script !
+Anti NetScan (Anti Abuse) Script !
 
 Just run it on your Server !
 
-#UBUNTU
+#Copy Below Code and Paste it on Your Server :
 ```
-bash <(curl -Ls https://raw.githubusercontent.com/sh-vp/Server-Optimize/main/optimize-ubuntu.sh)
-```
-#CentOS
-```
-bash <(curl -Ls https://raw.githubusercontent.com/sh-vp/Server-Optimize/main/optimize-centos.sh)
+bash <(curl -Ls https://raw.githubusercontent.com/sh-vp/Server-Optimize/main/blockscan.sh)
 ```
