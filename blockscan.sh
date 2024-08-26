@@ -4,7 +4,7 @@ red='\033[1;91m'          # Red
 green='\033[1;92m'        # Green
 yellow='\033[1;93m'       # Yellow
 White='\033[1;97m'        # White
-Blue='\033[1;94m'         # blue
+blue='\033[1;94m'         # blue
 
 # check root
 [[ $EUID -ne 0 ]] && echo -e "${red}Fatal error: ${plain} Please run this script with root privilege \n " && exit 1
@@ -154,10 +154,15 @@ echo -e "${blue} |  \| |/ _ \ __\___ \ / __/ _\` | '_ \  "
 echo -e "${blue} | |\  |  __/ |_ ___) | (_| (_| | | | |  "
 echo -e "${blue} |_| \_|\___|\__|____/ \___\__,_|_| |_|  "
 echo -e ""
-echo -e "${yellow}https://github.com/sh-vp/Server-Optimize"
+echo -e "${red}============================================"
+echo -e ""
+echo -e "${yellow}  https://github.com/sh-vp/Server-Optimize"
 echo -e ""
 echo -e "${green}  Author: Shadow-dev  "
 echo -e ""
 echo -e "${red}============================================"
 echo -e ""
 echo -e "${green}Server Optimized Successfully! ${White}"
+echo -e ""
+echo -e ""
+echo -e ""
