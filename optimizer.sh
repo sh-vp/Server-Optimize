@@ -56,6 +56,7 @@ echo -e "${red}  # ${green}Fix Dns Nameservers !${nc}"
 echo -e "${red}  # ${green}NetScan protection ENABLED !${nc}"
 echo -e "${red}  # ${green}Enable BBR !${nc}"
 echo -e ""
+echo -e ""
 }
 
 block_torrent() {
@@ -69,6 +70,22 @@ block_torrent() {
     iptables -A OUTPUT -p udp -m string --string "announce" --algo bm -j REJECT
     iptables -A OUTPUT -p udp --dport 443 -j REJECT
     echo -e "${green}Torrent access has been blocked completely.${nc}"
+}
+
+# Ask Reboot
+reboot() {
+    echo -e "${yellow}Do you want to Reboot now? (Recommended) (y/n)${nc}"
+    while true; do
+        read choice
+        echo 
+        if [[ "$choice" == 'y' || "$choice" == 'Y' ]]; then
+            sleep 0.5
+            reboot
+            exit 0
+        else
+            break
+        fi
+    done
 }
 
 block_net_scan(){
@@ -393,3 +410,6 @@ sleep 0.5
 
 #Show report
 show_header
+
+#reboot
+reboot
