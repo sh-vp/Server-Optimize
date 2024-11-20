@@ -46,7 +46,8 @@ echo -e "${green}  Author: Shadow-dev ${nc}"
 echo -e ""
 echo -e "${red}=================================================${nc}"
 echo -e ""
-echo -e "${red}  Server ${green}Optimized Successfully !${nc}"
+echo -e "${green}  Server ${red}Optimized ${green}Successfully !${nc}"
+echo -e "${red}  ---------------------------------------${nc}"
 echo -e ""
 echo -e "${red}  # ${green}Install Important Packages !${nc}"
 echo -e "${red}  # ${green}Set TimeZone !${nc}"
@@ -57,6 +58,22 @@ echo -e "${red}  # ${green}NetScan protection ENABLED !${nc}"
 echo -e "${red}  # ${green}Enable BBR !${nc}"
 echo -e ""
 echo -e ""
+}
+
+# Ask Reboot
+reboot() {
+    echo -e "${yellow}  Do you want to Reboot now? ${red}(Recommended) ${white}(y/n)${nc}"
+    while true; do
+        read choice
+        echo 
+        if [[ "$choice" == 'y' || "$choice" == 'Y' ]]; then
+            sleep 0.5
+            reboot
+            exit 0
+        else
+            break
+        fi
+    done
 }
 
 block_torrent() {
@@ -70,22 +87,6 @@ block_torrent() {
     iptables -A OUTPUT -p udp -m string --string "announce" --algo bm -j REJECT
     iptables -A OUTPUT -p udp --dport 443 -j REJECT
     echo -e "${green}Torrent access has been blocked completely.${nc}"
-}
-
-# Ask Reboot
-reboot() {
-    echo -e "${yellow}Do you want to Reboot now? (Recommended) (y/n)${nc}"
-    while true; do
-        read choice
-        echo 
-        if [[ "$choice" == 'y' || "$choice" == 'Y' ]]; then
-            sleep 0.5
-            reboot
-            exit 0
-        else
-            break
-        fi
-    done
 }
 
 block_net_scan(){
