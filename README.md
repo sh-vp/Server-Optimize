@@ -6,7 +6,7 @@
 
 - Set TimeZone !
 
-- Fix Hosts File !
+- Fix Hosts File (Github & LocalHost) !
 
 - Fix Dns Nameservers !
 
