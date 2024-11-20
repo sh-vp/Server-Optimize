@@ -62,18 +62,13 @@ echo -e ""
 
 # Ask Reboot
 reboot() {
-    echo -e "${yellow}  Do you want to Reboot now? ${red}(Recommended) ${white}(y/n)${nc}"
-    while true; do
-        read choice
-        echo 
-        if [[ "$choice" == 'y' || "$choice" == 'Y' ]]; then
+    echo -e "${yellow}  Do you want to Reboot now? ${red}(Recommended) ${white}(y/n)${nc}" && read choice
+    if [[ "${choice}" == "y" || "${choice}" == "Y" ]]; then
             sleep 0.5
             reboot
-            exit 0
-        else
-            break
-        fi
-    done
+    else
+            exit 1
+    fi
 }
 
 block_torrent() {
