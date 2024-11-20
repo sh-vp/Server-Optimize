@@ -27,7 +27,7 @@ else
     echo -e "${red}Failed to check the system OS, please contact the author!${nc}" >&2
     exit 1
 fi
-show_report(){
+show_header(){
 
 clear
 
@@ -367,4 +367,4 @@ enable_bbr
 sleep 0.5
 
 #Show report
-show_report
+show_header
