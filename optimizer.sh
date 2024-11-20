@@ -51,15 +51,36 @@ echo -e ""
 echo -e "${red}  # ${green}Install Important Packages !${nc}"
 echo -e "${red}  # ${green}Set TimeZone !${nc}"
 echo -e "${red}  # ${green}Fix Hosts File !${nc}"
+echo -e "${red}  # ${green}Torrent Access Blocked !${nc}"
 echo -e "${red}  # ${green}Fix Dns Nameservers !${nc}"
-echo -e "${red}  # ${green}Block Local Ip's For Control Netscan Attack !${nc}"
+echo -e "${red}  # ${green}NetScan protection ENABLED !${nc}"
 echo -e "${red}  # ${green}Enable BBR !${nc}"
 echo -e ""
 }
 
-blockscan(){
+block_torrent() {
+    echo -e "${yellow}Blocking torrent access...${nc}"
+    iptables -A OUTPUT -p tcp --dport 6881:6889 -j REJECT
+    iptables -A OUTPUT -p udp --dport 6881:6889 -j REJECT
+    iptables -A OUTPUT -p tcp --dport 6969 -j REJECT
+    iptables -A OUTPUT -p udp --dport 6969 -j REJECT
+    iptables -A OUTPUT -p udp --dport 4444 -j REJECT
+    iptables -A OUTPUT -p udp --dport 8999 -j REJECT
+    iptables -A OUTPUT -p udp -m string --string "announce" --algo bm -j REJECT
+    iptables -A OUTPUT -p udp --dport 443 -j REJECT
+    echo -e "${green}Torrent access has been blocked completely.${nc}"
+}
+
+block_net_scan(){
     
-echo -e "${yellow}Fixing Network Scan Abuse...${nc}"
+echo -e "${yellow}Enabling NetScan protection...${nc}"
+
+    iptables -N PORTSCAN
+    iptables -A PORTSCAN -p tcp --tcp-flags SYN,ACK,FIN,RST RST -m limit --limit 1/s --limit-burst 4 -j RETURN
+    iptables -A PORTSCAN -j DROP
+    iptables -A INPUT -p tcp --tcp-flags SYN,ACK,FIN,RST RST -j PORTSCAN
+    iptables -A INPUT -p icmp --icmp-type echo-request -j DROP
+    
 wget -q -O/etc/trackers https://raw.githubusercontent.com/Heclalava/blockpublictorrent-iptables/main/trackers
 cat >/etc/cron.daily/denypublic<<'EOF'
 IFS=$'\n'
@@ -187,7 +208,7 @@ iptables -A OUTPUT -p udp -s 0/0 -d 209.237.192.0/18 -j DROP
 iptables -A OUTPUT -p udp -s 0/0 -d 169.254.0.0/16 -j DROP
 sudo /sbin/iptables-save >> /dev/null
 
-echo -e "${green}Netscan Abuse Fixed !${nc}"
+echo -e "${green}NetScan protection is now ENABLED !${nc}"
 }
 
 # Install dependencies
@@ -359,7 +380,11 @@ set_timezone
 sleep 0.5
 
 # BlockNetScan
-blockscan
+block_net_scan
+sleep 0.5
+
+# Block Torrent
+block_torrent
 sleep 0.5
 
 # Install bbr
