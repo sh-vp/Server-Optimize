@@ -2,19 +2,19 @@
 
 
 
-- Install Important Packages !
+- Install Important Packages
 
-- Set TimeZone !
+- Set TimeZone
 
-- Fix Hosts File (Github & LocalHost) !
+- Fix Hosts File (Github & LocalHost)
 
-- Fix Dns Nameservers !
+- Fix Dns Nameservers
 
-- NetScan protection !
+- NetScan protection
 
-- Block Torrent Access !
+- Block Torrent Access
 
-- Enable BBR V3 !
+- Enable BBR V3
 
 
 #Copy Below Code and Paste it on Your Server :
