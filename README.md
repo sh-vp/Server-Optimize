@@ -10,9 +10,11 @@
 
 - Fix Dns Nameservers !
 
-- Block Local Ip's For Control Netscan Attack !
+- NetScan protection !
 
-- Enable BBR !
+- Block Torrent Access !
+
+- Enable BBR V3 !
 
 
 #Copy Below Code and Paste it on Your Server :
