@@ -2,7 +2,7 @@
 
 
 
-- Install Important Packages
+- Update Server and Install Important Packages
 
 - Set TimeZone
 
