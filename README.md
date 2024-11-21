@@ -3,6 +3,8 @@
 
 
 - Update Server and Install Important Packages
+ 
+- Optimized Network
 
 - Set TimeZone
 
