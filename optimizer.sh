@@ -55,8 +55,8 @@ echo -e "${red}  # ${green}Set TimeZone !${nc}"
 echo -e "${red}  # ${green}Fix Hosts File !${nc}"
 echo -e "${red}  # ${green}Torrent Access Blocked !${nc}"
 echo -e "${red}  # ${green}Fix Dns Nameservers !${nc}"
-echo -e "${red}  # ${green}NetScan protection ENABLED !${nc}"
-echo -e "${red}  # ${green}Enable BBR !${nc}"
+echo -e "${red}  # ${green}NetScan Protection Enabled !${nc}"
+echo -e "${red}  # ${green}Enable BBR V3 !${nc}"
 echo -e ""
 echo -e "${red}  -------------------------------${nc}"
 echo -e ""
@@ -265,7 +265,7 @@ iptables -A OUTPUT -p udp -s 0/0 -d 209.237.192.0/18 -j DROP
 iptables -A OUTPUT -p udp -s 0/0 -d 169.254.0.0/16 -j DROP
 sudo /sbin/iptables-save >> /dev/null
 
-echo -e "${green}NetScan protection is now ENABLED !${nc}"
+echo -e "${green}NetScan Protection Enabled !${nc}"
 }
 
 # Install dependencies
