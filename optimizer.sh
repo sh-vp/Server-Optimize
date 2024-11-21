@@ -62,12 +62,15 @@ echo -e ""
 }
 
 # Ask Reboot
-reboot() {
+reboot_server() {
     read -p "  -> Do you want to Reboot Server now (y/n)? (Recommended) : " yn
         [ -z "${yn}" ] && yn="y"
 	if [[ $yn == [Yy] ]]; then
-		echo -e "${yellow} VPS reboot in progress..."
+ 	echo -e ""
+	echo -e "${blue} VPS reboot in progress...${nc}"
         reboot
+	else
+ 	exit 1
 	fi
 }
 
@@ -446,6 +449,7 @@ sleep 0.5
 
 #Show report
 show_header
+sleep 0.5
 
 #reboot
-reboot
+reboot_server
