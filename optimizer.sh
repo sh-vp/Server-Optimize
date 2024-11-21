@@ -318,11 +318,9 @@ fix_etc_hosts(){
 
 #Enable BBR
 enable_bbr() {
-    if grep -q "net.core.default_qdisc=fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control=bbr" /etc/sysctl.conf; then
+if grep -q "net.core.default_qdisc=fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control=bbr" /etc/sysctl.conf; then
         echo -e "${green}BBR is already enabled!${nc}"
-        before_show_menu
-    fi
-
+else
     # Check the OS and install necessary packages
     case "${release}" in
     ubuntu | debian | armbian)
@@ -350,6 +348,7 @@ enable_bbr() {
     else
         echo -e "${red}Failed to enable BBR. Please check your system configuration.${nc}"
     fi
+fi
 }
 
 # Fix DNS Temporarly
