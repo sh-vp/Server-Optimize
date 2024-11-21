@@ -63,13 +63,52 @@ echo -e ""
 
 # Ask Reboot
 reboot() {
-    read -p "  -> Do you want to Reboot Server now (y/n)? (Recommended) " choice
-    if [[ "${choice}" == "y" || "${choice}" == "Y" ]]; then
-            sleep 0.5
-            reboot
-    else
-            exit 1
-    fi
+    read -p "  -> Do you want to Reboot Server now (y/n)? (Recommended) : " yn
+        [ -z "${yn}" ] && yn="y"
+	if [[ $yn == [Yy] ]]; then
+		echo -e "${yellow} VPS reboot in progress..."
+        reboot
+	fi
+}
+
+# Optimize system configuration
+optimizing_system(){
+	sed -i '/fs.file-max/d' /etc/sysctl.conf
+	sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_tw_reuse/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_rmem/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_wmem/d' /etc/sysctl.conf
+	sed -i '/net.core.somaxconn/d' /etc/sysctl.conf
+	sed -i '/net.core.rmem_max/d' /etc/sysctl.conf
+	sed -i '/net.core.wmem_max/d' /etc/sysctl.conf
+	sed -i '/net.core.wmem_default/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_tw_buckets/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.tcp_max_syn_backlog/d' /etc/sysctl.conf
+	sed -i '/net.core.netdev_max_backlog/d' /etc/sysctl.conf
+ 	sed -i '/net.ipv4.tcp_slow_start_after_idle/d' /etc/sysctl.conf
+	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
+	echo "fs.file-max = 1000000
+fs.inotify.max_user_instances = 8192
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_rmem = 16384 262144 8388608
+net.ipv4.tcp_wmem = 32768 524288 16777216
+net.core.somaxconn = 8192
+net.core.rmem_max = 16777216
+net.core.wmem_max = 16777216
+net.core.wmem_default = 2097152
+net.ipv4.tcp_max_tw_buckets = 5000
+net.ipv4.tcp_max_syn_backlog = 10240
+net.core.netdev_max_backlog = 10240
+net.ipv4.tcp_slow_start_after_idle = 0
+# forward ipv4
+net.ipv4.ip_forward = 1">>/etc/sysctl.conf
+	sysctl -p
+	echo "*               soft    nofile           1000000
+*               hard    nofile          1000000">/etc/security/limits.conf
+	echo "ulimit -SHn 1000000">>/etc/profile
+
 }
 
 block_torrent() {
