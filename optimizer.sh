@@ -63,7 +63,7 @@ echo -e ""
 
 # Ask Reboot
 reboot() {
-    echo -e "${red}  ->${yellow} Do you want to Reboot Server now ${green}(y/n)? ${red}(Recommended)${nc}" && read choice
+    read -p "  -> Do you want to Reboot Server now (y/n)? (Recommended) " choice
     if [[ "${choice}" == "y" || "${choice}" == "Y" ]]; then
             sleep 0.5
             reboot
