@@ -16,7 +16,7 @@
 
 - Block Torrent Access
 
-- Enable BBR V3
+- Enable TCP BBR
 
 
 #Copy Below Code and Paste it on Your Server :
