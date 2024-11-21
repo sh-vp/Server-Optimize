@@ -56,7 +56,7 @@ echo -e "${red}  # ${green}Fix Hosts File !${nc}"
 echo -e "${red}  # ${green}Torrent Access Blocked !${nc}"
 echo -e "${red}  # ${green}Fix Dns Nameservers !${nc}"
 echo -e "${red}  # ${green}NetScan Protection Enabled !${nc}"
-echo -e "${red}  # ${green}Enable BBR V3 !${nc}"
+echo -e "${red}  # ${green}TCP BBR Enabled !${nc}"
 echo -e ""
 echo -e "${red}  -------------------------------${nc}"
 echo -e ""
@@ -445,7 +445,7 @@ sleep 0.5
 
 # Install bbr
 enable_bbr
-sleep 0.5
+sleep 2
 
 #Show report
 show_header
