@@ -47,7 +47,7 @@ echo -e ""
 echo -e "${red}=================================================${nc}"
 echo -e ""
 echo -e "${green}  Server ${red}Optimized ${green}Successfully !${nc}"
-echo -e "${red}  ---------------------------------------${nc}"
+echo -e "${red}  -------------------------------${nc}"
 echo -e ""
 echo -e "${red}  # ${green}Install Important Packages !${nc}"
 echo -e "${red}  # ${green}Set TimeZone !${nc}"
@@ -57,12 +57,13 @@ echo -e "${red}  # ${green}Fix Dns Nameservers !${nc}"
 echo -e "${red}  # ${green}NetScan protection ENABLED !${nc}"
 echo -e "${red}  # ${green}Enable BBR !${nc}"
 echo -e ""
+echo -e "${red}  -------------------------------${nc}"
 echo -e ""
 }
 
 # Ask Reboot
 reboot() {
-    echo -e "${yellow}  Do you want to Reboot now? ${red}(Recommended) ${white}(y/n)${nc}" && read choice
+    echo -e "${red}  ->${yellow} Do you want to Reboot Server now ${green}(y/n)? ${red}(Recommended)${nc}" && read choice
     if [[ "${choice}" == "y" || "${choice}" == "Y" ]]; then
             sleep 0.5
             reboot
