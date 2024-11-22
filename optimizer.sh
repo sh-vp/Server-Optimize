@@ -354,65 +354,6 @@ curl -s -LO https://raw.githubusercontent.com/Heclalava/blockpublictorrent-iptab
 cat hostsTrackers >> /etc/hosts
 sort -uf /etc/hosts > /etc/hosts.uniq && mv /etc/hosts{.uniq,}
 
-    case "${release}" in
-    centos | almalinux | rocky | fedora )
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="10.0.0.0/8" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="103.71.29.0/24" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="172.16.0.0/12" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.168.0.0/16" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="100.64.0.0/10" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="141.101.78.0/23" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="173.245.48.0/20" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.0.2.0/24" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="169.254.0.0/24" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="0.0.0.0/8" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="169.254.0.0/16" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.0.2.0/24" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="198.18.0.0/15" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="224.0.0.0/4" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="240.0.0.0/4" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="203.0.113.0/24" reject' 
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="224.0.0.0/3" reject' 
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="198.51.100.0/24" reject' 
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.88.99.0/24" reject' 
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="192.0.0.0/24" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="223.202.0.0/16" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="194.5.192.0/19" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="209.237.192.0/18" reject'
-firewall-cmd --permanent --zone=public --add-rich-rule='rule family="ipv4" source address="169.254.0.0/16" reject'
-firewall-cmd --reload
-        ;;
-    ubuntu | debian )
-ufw deny out from any to 10.0.0.0/8
-ufw deny out from any to 103.71.29.0/24
-ufw deny out from any to 172.16.0.0/12
-ufw deny out from any to 192.168.0.0/16
-ufw deny out from any to 100.64.0.0/10
-ufw deny out from any to 141.101.78.0/23
-ufw deny out from any to 173.245.48.0/20
-ufw deny out from any to 192.0.2.0/24
-ufw deny out from any to 169.254.0.0/24
-ufw deny out from any to 0.0.0.0/8
-ufw deny out from any to 169.254.0.0/16
-ufw deny out from any to 192.0.2.0/24
-ufw deny out from any to 198.18.0.0/15
-ufw deny out from any to 224.0.0.0/4
-ufw deny out from any to 240.0.0.0/4
-ufw deny out from any to 203.0.113.0/24 
-ufw deny out from any to 224.0.0.0/3 
-ufw deny out from any to 198.51.100.0/24 
-ufw deny out from any to 192.88.99.0/24 
-ufw deny out from any to 192.0.0.0/24
-ufw deny out from any to 223.202.0.0/16
-ufw deny out from any to 194.5.192.0/19
-ufw deny out from any to 209.237.192.0/18
-ufw deny out from any to 169.254.0.0/16
-ufw reload
-        ;;
-        *)
-echo -e "${red}The firewall compatible with your operating system was not found!${nc}"
-        ;;
-    esac
 iptables -A OUTPUT -p tcp -s 0/0 -d 10.0.0.0/8 -j DROP
 iptables -A OUTPUT -p tcp -s 0/0 -d 103.71.29.0/24 -j DROP
 iptables -A OUTPUT -p tcp -s 0/0 -d 172.16.0.0/12 -j DROP
