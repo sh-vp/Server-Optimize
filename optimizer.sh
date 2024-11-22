@@ -12,7 +12,12 @@ clear
 # Paths
 HOST_PATH="/etc/hosts"
 DNS_PATH="/etc/resolv.conf"
-
+SYS_PATH="/etc/sysctl.conf"
+PROF_PATH="/etc/profile"
+SSH_PORT=""
+SSH_PATH="/etc/ssh/sshd_config"
+SWAP_PATH="/swapfile"
+SWAP_SIZE=2G
 # check root
 [[ $EUID -ne 0 ]] && echo -e "${red}Fatal error: ${yellow} Please run this script with root privilege !${nc}" && exit 1
 
@@ -74,45 +79,238 @@ reboot_server() {
  	exit 1
 	fi
 }
+# Update & Upgrade & Remove & Clean
+complete_update() {
+    echo -e "${yellow}Updating the System... (This can take a while.)${nc}"
+    sleep 0.5
+
+    sudo apt -q update
+    sudo apt -y upgrade
+    sudo apt -y full-upgrade
+    sudo apt -y autoremove
+    sleep 0.5
+    sudo apt -y -q autoclean
+    sudo apt -y clean
+    sudo apt -q update
+    sudo apt -y upgrade
+    sudo apt -y full-upgrade
+    sudo apt -y autoremove --purge
+
+    echo -e "${green}System Updated & Cleaned Successfully.${nc}"
+    sleep 0.5
+}
+# Swap Maker
+swap_maker() {
+    echo -e "${yellow}Making SWAP Space...${nc}"
+    sleep 0.5
+
+    ## Make Swap
+    sudo fallocate -l $SWAP_SIZE $SWAP_PATH  ## Allocate size
+    sudo chmod 600 $SWAP_PATH                ## Set proper permission
+    sudo mkswap $SWAP_PATH                   ## Setup swap         
+    sudo swapon $SWAP_PATH                   ## Enable swap
+    echo "$SWAP_PATH   none    swap    sw    0   0" >> /etc/fstab ## Add to fstab
+    echo -e "${green}SWAP Created Successfully.${nc}"
+    sleep 0.5
+}
 
 # Optimize system configuration
-optimizing_system(){
-	sed -i '/fs.file-max/d' /etc/sysctl.conf
-	sed -i '/fs.inotify.max_user_instances/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_tw_reuse/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.ip_local_port_range/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_rmem/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_wmem/d' /etc/sysctl.conf
-	sed -i '/net.core.somaxconn/d' /etc/sysctl.conf
-	sed -i '/net.core.rmem_max/d' /etc/sysctl.conf
-	sed -i '/net.core.wmem_max/d' /etc/sysctl.conf
-	sed -i '/net.core.wmem_default/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_max_tw_buckets/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.tcp_max_syn_backlog/d' /etc/sysctl.conf
-	sed -i '/net.core.netdev_max_backlog/d' /etc/sysctl.conf
- 	sed -i '/net.ipv4.tcp_slow_start_after_idle/d' /etc/sysctl.conf
-	sed -i '/net.ipv4.ip_forward/d' /etc/sysctl.conf
-	echo "fs.file-max = 1000000
-fs.inotify.max_user_instances = 8192
-net.ipv4.tcp_tw_reuse = 1
-net.ipv4.ip_local_port_range = 1024 65535
-net.ipv4.tcp_rmem = 16384 262144 8388608
-net.ipv4.tcp_wmem = 32768 524288 16777216
-net.core.somaxconn = 8192
-net.core.rmem_max = 16777216
-net.core.wmem_max = 16777216
-net.core.wmem_default = 2097152
-net.ipv4.tcp_max_tw_buckets = 5000
-net.ipv4.tcp_max_syn_backlog = 10240
-net.core.netdev_max_backlog = 10240
-net.ipv4.tcp_slow_start_after_idle = 0
-# forward ipv4
-net.ipv4.ip_forward = 1">>/etc/sysctl.conf
-	sysctl -p
-	echo "*               soft    nofile           1000000
-*               hard    nofile          1000000">/etc/security/limits.conf
-	echo "ulimit -SHn 1000000">>/etc/profile
+sysctl_optimizations() {
+    ## Make a backup of the original sysctl.conf file
+    cp $SYS_PATH /etc/sysctl.conf.bak
 
+    echo -e "${yellow}Default sysctl.conf file Saved. Directory: /etc/sysctl.conf.bak${nc}"
+    sleep 1
+
+    echo -e "${yellow}Optimizing the Network...${nc}"
+    sleep 0.5
+
+    sed -i -e '/fs.file-max/d' \
+        -e '/net.core.default_qdisc/d' \
+        -e '/net.core.netdev_max_backlog/d' \
+        -e '/net.core.optmem_max/d' \
+        -e '/net.core.somaxconn/d' \
+        -e '/net.core.rmem_max/d' \
+        -e '/net.core.wmem_max/d' \
+        -e '/net.core.rmem_default/d' \
+        -e '/net.core.wmem_default/d' \
+        -e '/net.ipv4.tcp_rmem/d' \
+        -e '/net.ipv4.tcp_wmem/d' \
+        -e '/net.ipv4.tcp_congestion_control/d' \
+        -e '/net.ipv4.tcp_fastopen/d' \
+        -e '/net.ipv4.tcp_fin_timeout/d' \
+        -e '/net.ipv4.tcp_keepalive_time/d' \
+        -e '/net.ipv4.tcp_keepalive_probes/d' \
+        -e '/net.ipv4.tcp_keepalive_intvl/d' \
+        -e '/net.ipv4.tcp_max_orphans/d' \
+        -e '/net.ipv4.tcp_max_syn_backlog/d' \
+        -e '/net.ipv4.tcp_max_tw_buckets/d' \
+        -e '/net.ipv4.tcp_mem/d' \
+        -e '/net.ipv4.tcp_mtu_probing/d' \
+        -e '/net.ipv4.tcp_notsent_lowat/d' \
+        -e '/net.ipv4.tcp_retries2/d' \
+        -e '/net.ipv4.tcp_sack/d' \
+        -e '/net.ipv4.tcp_dsack/d' \
+        -e '/net.ipv4.tcp_slow_start_after_idle/d' \
+        -e '/net.ipv4.tcp_window_scaling/d' \
+        -e '/net.ipv4.tcp_adv_win_scale/d' \
+        -e '/net.ipv4.tcp_ecn/d' \
+        -e '/net.ipv4.tcp_ecn_fallback/d' \
+        -e '/net.ipv4.tcp_syncookies/d' \
+        -e '/net.ipv4.udp_mem/d' \
+        -e '/net.ipv6.conf.all.disable_ipv6/d' \
+        -e '/net.ipv6.conf.default.disable_ipv6/d' \
+        -e '/net.ipv6.conf.lo.disable_ipv6/d' \
+        -e '/net.unix.max_dgram_qlen/d' \
+        -e '/vm.min_free_kbytes/d' \
+        -e '/vm.swappiness/d' \
+        -e '/vm.vfs_cache_pressure/d' \
+        -e '/net.ipv4.conf.default.rp_filter/d' \
+        -e '/net.ipv4.conf.all.rp_filter/d' \
+        -e '/net.ipv4.conf.all.accept_source_route/d' \
+        -e '/net.ipv4.conf.default.accept_source_route/d' \
+        -e '/net.ipv4.neigh.default.gc_thresh1/d' \
+        -e '/net.ipv4.neigh.default.gc_thresh2/d' \
+        -e '/net.ipv4.neigh.default.gc_thresh3/d' \
+        -e '/net.ipv4.neigh.default.gc_stale_time/d' \
+        -e '/net.ipv4.conf.default.arp_announce/d' \
+        -e '/net.ipv4.conf.lo.arp_announce/d' \
+        -e '/net.ipv4.conf.all.arp_announce/d' \
+        -e '/kernel.panic/d' \
+        -e '/vm.dirty_ratio/d' \
+        -e '/^#/d' \
+        -e '/^$/d' \
+        "$SYS_PATH"
+
+cat <<EOF >> "$SYS_PATH"
+
+fs.file-max = 67108864
+net.core.default_qdisc = fq_codel
+net.core.netdev_max_backlog = 32768
+net.core.optmem_max = 262144
+net.core.somaxconn = 65536
+net.core.rmem_max = 33554432
+net.core.rmem_default = 1048576
+net.core.wmem_max = 33554432
+net.core.wmem_default = 1048576
+net.ipv4.tcp_rmem = 16384 1048576 33554432
+net.ipv4.tcp_wmem = 16384 1048576 33554432
+net.ipv4.tcp_congestion_control = bbr
+net.ipv4.tcp_fin_timeout = 25
+net.ipv4.tcp_keepalive_time = 1200
+net.ipv4.tcp_keepalive_probes = 7
+net.ipv4.tcp_keepalive_intvl = 30
+net.ipv4.tcp_max_orphans = 819200
+net.ipv4.tcp_max_syn_backlog = 20480
+net.ipv4.tcp_max_tw_buckets = 1440000
+net.ipv4.tcp_mem = 65536 1048576 33554432
+net.ipv4.tcp_mtu_probing = 1
+net.ipv4.tcp_notsent_lowat = 32768
+net.ipv4.tcp_retries2 = 8
+net.ipv4.tcp_sack = 1
+net.ipv4.tcp_dsack = 1
+net.ipv4.tcp_slow_start_after_idle = 0
+net.ipv4.tcp_window_scaling = 1
+net.ipv4.tcp_adv_win_scale = -2
+net.ipv4.tcp_ecn = 1
+net.ipv4.tcp_ecn_fallback = 1
+net.ipv4.tcp_syncookies = 1
+net.ipv4.udp_mem = 65536 1048576 33554432
+net.ipv6.conf.all.disable_ipv6 = 0
+net.ipv6.conf.default.disable_ipv6 = 0
+net.ipv6.conf.lo.disable_ipv6 = 0
+net.unix.max_dgram_qlen = 256
+vm.min_free_kbytes = 65536
+vm.swappiness = 10
+vm.vfs_cache_pressure = 250
+net.ipv4.conf.default.rp_filter = 2
+net.ipv4.conf.all.rp_filter = 2
+net.ipv4.conf.all.accept_source_route = 0
+net.ipv4.conf.default.accept_source_route = 0
+net.ipv4.neigh.default.gc_thresh1 = 512
+net.ipv4.neigh.default.gc_thresh2 = 2048
+net.ipv4.neigh.default.gc_thresh3 = 16384
+net.ipv4.neigh.default.gc_stale_time = 60
+net.ipv4.conf.default.arp_announce = 2
+net.ipv4.conf.lo.arp_announce = 2
+net.ipv4.conf.all.arp_announce = 2
+kernel.panic = 1
+vm.dirty_ratio = 20
+
+
+EOF
+
+    sudo sysctl -p
+    
+    echo -e "${green}Network is Optimized.${nc}"
+    sleep 0.5
+}
+
+
+# Function to find the SSH port and set it in the SSH_PORT variable
+find_ssh_port() {
+    echo -e "${yellow}Finding SSH port..."
+    
+    ## Check if the SSH configuration file exists
+    if [ -e "$SSH_PATH" ]; then
+        ## Use grep to search for the 'Port' directive in the SSH configuration file
+        SSH_PORT=$(grep -oP '^Port\s+\K\d+' "$SSH_PATH" 2>/dev/null)
+
+        if [ -n "$SSH_PORT" ]; then
+            echo -e "${green}SSH port found: $SSH_PORT${nc}"
+            sleep 0.5
+        else
+            echo 
+            echo -e "${green}SSH port is default 22.${nc}"
+            echo 
+            SSH_PORT=22
+            sleep 0.5
+        fi
+    else
+        echo -e "${red}SSH configuration file not found at $SSH_PATH${nc}"
+    fi
+}
+
+# Remove old SSH config to prevent duplicates.
+remove_old_ssh_conf() {
+    ## Make a backup of the original sshd_config file
+    cp $SSH_PATH /etc/ssh/sshd_config.bak
+
+    echo -e "${yellow}Default SSH Config file Saved. Directory: /etc/ssh/sshd_config.bak${nc}"
+    sleep 1
+
+    ## Remove these lines
+    sed -i -e 's/#UseDNS yes/UseDNS no/' \
+        -e 's/#Compression no/Compression yes/' \
+        -e 's/Ciphers .*/Ciphers aes256-ctr,chacha20-poly1305@openssh.com/' \
+        -e '/MaxAuthTries/d' \
+        -e '/MaxSessions/d' \
+        -e '/TCPKeepAlive/d' \
+        -e '/ClientAliveInterval/d' \
+        -e '/ClientAliveCountMax/d' \
+        -e '/AllowAgentForwarding/d' \
+        -e '/AllowTcpForwarding/d' \
+        -e '/GatewayPorts/d' \
+        -e '/PermitTunnel/d' \
+        -e '/X11Forwarding/d' "$SSH_PATH"
+
+}
+# Update SSH config
+update_sshd_conf() {
+    echo -e "${yellow}Optimizing SSH...${nc}"
+    sleep 0.5
+    echo "TCPKeepAlive yes" | tee -a "$SSH_PATH"
+    echo "ClientAliveInterval 3000" | tee -a "$SSH_PATH"
+    echo "ClientAliveCountMax 100" | tee -a "$SSH_PATH"
+    echo "AllowAgentForwarding yes" | tee -a "$SSH_PATH"
+    echo "AllowTcpForwarding yes" | tee -a "$SSH_PATH"
+    echo "GatewayPorts yes" | tee -a "$SSH_PATH"
+    echo "PermitTunnel yes" | tee -a "$SSH_PATH"
+    echo "X11Forwarding yes" | tee -a "$SSH_PATH"
+    sudo systemctl restart ssh
+
+    echo -e "${green}SSH is Optimized.${nc}"
+    sleep 0.5
 }
 
 block_torrent() {
@@ -446,6 +644,21 @@ sleep 0.5
 # Install bbr
 enable_bbr
 sleep 2
+
+complete_update
+sleep 0.5
+
+swap_maker
+sleep 0.5
+
+sysctl_optimizations
+sleep 0.5
+
+remove_old_ssh_conf
+sleep 0.5
+    
+update_sshd_conf
+sleep 0.5
 
 #Show report
 show_header
