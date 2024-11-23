@@ -3,14 +3,8 @@
 
 
 - Update Server and Install Important Packages
- 
-- Optimized Network
 
-- Optimized SSH Service
-  
 - System Updated & Cleaned
-  
-- Created 2GB MEM SWAP
 
 - Set TimeZone
 
