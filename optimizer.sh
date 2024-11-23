@@ -55,10 +55,7 @@ echo -e "${green}  Server ${red}Optimized ${green}Successfully !${nc}"
 echo -e "${red}  -------------------------------${nc}"
 echo -e ""
 echo -e "${red}  # ${green}Install Important Packages !${nc}"
-echo -e "${red}  # ${green}Network Optimized !${nc}"
-echo -e "${red}  # ${green}SSH is Optimized !${nc}"
 echo -e "${red}  # ${green}System Updated & Cleaned !${nc}"
-echo -e "${red}  # ${green}MEM SWAP Created !${nc}"
 echo -e "${red}  # ${green}Set TimeZone !${nc}"
 echo -e "${red}  # ${green}Fix Hosts File !${nc}"
 echo -e "${red}  # ${green}Torrent Access Blocked !${nc}"
@@ -589,19 +586,8 @@ sleep 0.5
 enable_bbr
 sleep 2
 
+#complete update
 complete_update
-sleep 0.5
-
-swap_maker
-sleep 0.5
-
-sysctl_optimizations
-sleep 0.5
-
-remove_old_ssh_conf
-sleep 0.5
-    
-update_sshd_conf
 sleep 0.5
 
 #Show report
