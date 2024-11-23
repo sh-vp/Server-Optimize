@@ -457,7 +457,7 @@ fix_etc_hosts(){
 
 #Enable BBR
 enable_bbr() {
-if grep -q "net.core.default_qdisc=fq" /etc/sysctl.conf && grep -q "net.ipv4.tcp_congestion_control=bbr" /etc/sysctl.conf; then
+if grep -q "fq" /etc/sysctl.conf && grep -q "bbr" /etc/sysctl.conf; then
         echo -e "${green}BBR is already enabled!${nc}"
 else
     # Check the OS and install necessary packages
